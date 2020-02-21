@@ -77,13 +77,13 @@
         </div>
         <div class="container" id="graph_historical_data_1">
             <h2>Currency Graph</h2>
-            <div id="historical_data_graph" class="container">
+            <div id="historical_data_graph">
                 <canvas id="chart" width="100" height="100"></canvas>
             </div>
         </div>
         <div class="container" id="graph_historical_data_amount">
             <h2>Amount Graph</h2>
-            <div id="historical_data_graph_amount" class="container">
+            <div id="historical_data_graph_amount">
                 <canvas id="chart_amount" width="100" height="100"></canvas>
             </div>
         </div>
@@ -104,6 +104,9 @@
     </div>
     <script type="text/javascript">
         "use strict"
+        var chart;
+        var amount_chart;
+
         function convert() {
             var url = "https://api.exchangeratesapi.io/latest?";
             var base = document.getElementById("base").value;
@@ -164,99 +167,22 @@
                     document.getElementById("historical_data_body").innerHTML = html;
                     var deviation = parseFloat((current / max) * 100.0)
                     document.getElementById("remark").value = Math.round(100 - deviation) / 100 + " % away from high value";
-                    update_chart(labels, values, amount_values, target);
+                    update_chart(chart, labels, values, target);
+                    update_chart(amount_chart, labels, amount_values, target);
+                    chart.update();
+                    amount_chart.update();
                 }
                 ))
                 .then(data => console.log(data));
         }
 
-        function update_chart(labels, values, amount_values, target) {
-            var ctx = document.getElementById('chart').getContext('2d');
-            var lineChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: target,
-                        data: values
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    title: {
-                        display: true,
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    hover: {
-                        mode: 'nearest',
-                        intersect: true
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Date'
-                            }
-                        }],
-                        yAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Value'
-                            }
-                        }]
-                    }
-                }
-            });
-
-            var ctx1 = document.getElementById('chart_amount').getContext('2d');
-            var lineChart1 = new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: target,
-                            data: amount_values
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    title: {
-                        display: true,
-                    },
-                    tooltips: {
-                        mode: 'index',
-                        intersect: false,
-                    },
-                    hover: {
-                        mode: 'nearest',
-                        intersect: true
-                    },
-                    scales: {
-                        xAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Date'
-                            }
-                        }],
-                        yAxes: [{
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: 'Value'
-                            }
-                        }]
-                    }
-                }
-            });
+        function update_chart(current_chart, labels, values, target) {
+            current_chart.data.labels = labels;
+            current_chart.data.datasets[0].label = target;
+            current_chart.data.datasets[0].data = values;
+            current_chart.update();
         }
+
         function populate(optionList) {
             var options = [{ selected: true, value: "USD", text: "US dollar" },
             { selected: false, value: "JPY", text: "Japanese yen" },
@@ -298,9 +224,55 @@
             );
         }
 
+        function createChart(current_chart) {
+            var c_chart = new Chart(current_chart, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: [],
+                        data: []
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                    },
+                    tooltips: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: true
+                    },
+                    scales: {
+                        xAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Date'
+                            }
+                        }],
+                        yAxes: [{
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Value'
+                            }
+                        }]
+                    }
+                }
+            });
+
+            return c_chart;
+        }
         window.onload = function loadFunction() {
             populate(document.getElementById("base"));
             populate(document.getElementById("target"));
+            chart = createChart(document.getElementById('chart').getContext('2d'));
+            amount_chart = createChart(document.getElementById('chart_amount').getContext('2d'));
         }     
     </script>
     </form>
