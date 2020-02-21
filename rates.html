@@ -9,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.6.0/math.min.js"> </script>
     </script>
 </head>
 
@@ -144,8 +145,6 @@
                     var labels = [];
                     var values = [];
                     var amount_values = [];
-                    var max = 0;
-                    var current = 0;
                     while (end_date > start_date) {
                         var c_date = json.rates[(end_date.toISOString().split('T')[0])];
                         if (c_date != null) {
@@ -157,16 +156,11 @@
                             labels.unshift(end_date.toISOString().split('T')[0]);
                             values.unshift(c_date[target]);
                             amount_values.unshift(c_date[target] * amount);
-
-                            if (current == 0)
-                                current = c_date[target];
-                            max = Math.max(max, c_date[target]);
                         }
                         end_date.setDate(end_date.getDate() - 1);
                     }
                     document.getElementById("historical_data_body").innerHTML = html;
-                    var deviation = parseFloat((current / max) * 100.0)
-                    document.getElementById("remark").value = Math.round(100 - deviation) / 100 + " % away from high value";
+                    update_remark(values, amount_values);
                     update_chart(chart, labels, values, target);
                     update_chart(amount_chart, labels, amount_values, target);
                     chart.update();
@@ -174,6 +168,17 @@
                 }
                 ))
                 .then(data => console.log(data));
+        }
+
+        function update_remark(values, amount_values) {
+            var message = "Mean: " + math.mean(values).toFixed(2);
+            message += " Min: " + math.min(values).toFixed(2);
+            message += " Max: " + math.max(values).toFixed(2);
+            message += " Std: " + math.std(values).toFixed(2);
+            message += " Variance: " + math.variance(values).toFixed(2);
+            message += " Median: " + math.median(values).toFixed(2);
+
+            document.getElementById("remark").value = message;
         }
 
         function update_chart(current_chart, labels, values, target) {
