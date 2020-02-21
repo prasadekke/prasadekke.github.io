@@ -2,134 +2,172 @@
 
 <html lang='en'>
 
-    <head>
-        <meta charset='utf-8'>
-        <title> Currency Converter </title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        </script>
-    </head>
+<head>
+    <meta charset='utf-8'>
+    <title> Currency Converter </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </script>
+</head>
 
-    <body>
-        <div class="panel panel-default">
-            <div class="panel-heading">Currency Converter</div>
-            <div id="converter" class="container">
-                <h2>Converter</h2>
-                <form class="form-horizontal" action="" id="get_rates" onsubmit="return false;">
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="from_currency">From Currency:</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" id="base" name='base'>
-                                <option value="INR">INR</option>
-                                <option value="USD">USD</option>
-                                <option value="GBP">GBP</option>
-                            </select>
+<body>
+    <div class="panel panel-default">
+        <div class="panel-heading">Currency Converter</div>
+        <div id="converter" class="container">
+            <h2>Converter</h2>
+            <form class="form-horizontal" action="" id="get_rates" onsubmit="return false;">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="from_currency">From Currency:</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="base" name='base' onchange="get_datewise_data()">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="to_currency">Target Currency</label>
+                    <div class="col-sm-10">
+                        <select class="form-control" id="target" name='target' onchange="get_datewise_data()">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="amount">Amount</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" name="amount" id="amount" inputmode="numeric"
+                            inputmode="numeric" pattern="[0-9]+" value="1">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="amount"></label>
+                    <div class="col-sm-10">
+                        <div class="col-sm-10-group-btn">
+                            <button class="btn btn-default" type="submit" onclick="convert()">Convert
+                                <i class="glyphicon glyphicon-random"></i>
+                            </button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="to_currency">Target Currency</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" id="target" name='target'>
-                                <option value="INR">INR</option>
-                                <option value="USD">USD</option>
-                                <option value="GBP">GBP</option>
-                            </select>
-                        </div>
+                </div>
+                <div class="form-group">
+                    <label for="disabledInput" class="col-sm-2 control-label">Converted Amount</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="converted_amount" type="text" disabled>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="amount">Amount</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" type="text" name="amount" id="amount" inputmode="numeric"
-                                inputmode="numeric" pattern="[0-9]+" value="1">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="amount"></label>
-                        <div class="col-sm-10">
-                            <div class="col-sm-10-group-btn">
-                                <button class="btn btn-default" type="submit" onclick="convert()">Convert
-                                    <i class="glyphicon glyphicon-random"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="disabledInput" class="col-sm-2 control-label">Converted Amount</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" id="converted_amount" type="text" disabled>
-                        </div>
-                    </div>
-            </div>
-            <div class="container" id="historical_data">
-                <h2>Historical Data</h2>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>USD</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historical_data_body">
-                    </tbody>
-                </table>
-            </div>
+                </div>
         </div>
-        <script type="text/javascript">
-            "use strict"
-            function convert() {
-                var url = "https://api.exchangeratesapi.io/latest?";
-                var base = document.getElementById("base").value;
-                var target = document.getElementById("target").value;
-                var amount = document.getElementById("amount").value;
-                amount = parseFloat(amount);
-                var finalUrl = url + "base=" + base + "&symbols=" + target;
-                const options = {};
-                fetch(finalUrl, options)
-                    .then(res => res.text().then(text => {
-                        var json = JSON.parse(text)
-                        var rate = parseFloat(json.rates[target]);
-                        document.getElementById("converted_amount").value = (amount * rate);
-                    }
-                    ))
-                    .then(data => console.log(data));
+        <div class="container" id="historical_data">
+            <h2>Historical Data</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>USD</th>
+                    </tr>
+                </thead>
+                <tbody id="historical_data_body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        "use strict"
+        function convert() {
+            var url = "https://api.exchangeratesapi.io/latest?";
+            var base = document.getElementById("base").value;
+            var target = document.getElementById("target").value;
+            var amount = document.getElementById("amount").value;
+            amount = parseFloat(amount);
+            var finalUrl = url + "base=" + base + "&symbols=" + target;
+            const options = {};
+            fetch(finalUrl, options)
+                .then(res => res.text().then(text => {
+                    var json = JSON.parse(text)
+                    var rate = parseFloat(json.rates[target]);
+                    document.getElementById("converted_amount").value = (amount * rate);
+                }
+                ))
+                .then(data => console.log(data));
+        }
 
-                get_datewise_data();
-            }
+        function get_datewise_data() {
+            var url = "https://api.exchangeratesapi.io/history?";
+            var base = document.getElementById("base").value;
+            var target = document.getElementById("target").value;
 
-            function get_datewise_data() {
-                var url = "https://api.exchangeratesapi.io/history?";
-                var base = document.getElementById("base").value;
-                var target = document.getElementById("target").value;
+            var end_date = new Date();
+            var start_date = new Date();
+            start_date.setDate(end_date.getDate() - 15);
 
-                var end_date = new Date();
-                var start_date = new Date();
-                start_date.setDate(end_date.getDate() - 15);
-
-                var finalUrl = url + "start_at=" + start_date.toISOString().split('T')[0] + "&end_at=" + end_date.toISOString().split('T')[0] + "&base=" + base + "&symbols=" + target;
-                const options = {};
-                fetch(finalUrl, options)
-                    .then(res => res.text().then(text => {
-                        var json = JSON.parse(text);
-                        var html = "";
-                        while (end_date > start_date) {
-                            var c_date = json.rates[(end_date.toISOString().split('T')[0])];
-                            if (c_date != null) {
-                                html += "<tr>";
-                                html += "<td>" + (end_date.toISOString().split('T')[0]) + "</td>";
-                                html += "<td>" + c_date[target] + "</td>";
-                                html += "</tr>";
-                            }
-                            end_date.setDate(end_date.getDate() - 1);
+            var finalUrl = url + "start_at=" + start_date.toISOString().split('T')[0] + "&end_at=" + end_date.toISOString().split('T')[0] + "&base=" + base + "&symbols=" + target;
+            const options = {};
+            fetch(finalUrl, options)
+                .then(res => res.text().then(text => {
+                    var json = JSON.parse(text);
+                    var html = "";
+                    while (end_date > start_date) {
+                        var c_date = json.rates[(end_date.toISOString().split('T')[0])];
+                        if (c_date != null) {
+                            html += "<tr>";
+                            html += "<td>" + (end_date.toISOString().split('T')[0]) + "</td>";
+                            html += "<td>" + c_date[target] + "</td>";
+                            html += "</tr>";
                         }
-                        document.getElementById("historical_data_body").innerHTML = html;
+                        end_date.setDate(end_date.getDate() - 1);
                     }
-                    ))
-                    .then(data => console.log(data));
-            }
-        </script>
+                    document.getElementById("historical_data_body").innerHTML = html;
+                }
+                ))
+                .then(data => console.log(data));
+        }
 
-        </form>
-    </body>
+        function populate(optionList) {
+            var options = [{ selected: true, value: "USD", text: "US dollar" },
+            { selected: false, value: "JPY", text: "Japanese yen" },
+            { selected: false, value: "BGN", text: "Bulgarian lev" },
+            { selected: false, value: "CZK", text: "Czech koruna" },
+            { selected: false, value: "DKK", text: "Danish krone" },
+            { selected: false, value: "GBP", text: "Pound sterling" },
+            { selected: false, value: "HUF", text: "Hungarian forint" },
+            { selected: false, value: "PLN", text: "Polish zloty" },
+            { selected: false, value: "RON", text: "Romanian leu" },
+            { selected: false, value: "SEK", text: "Swedish krona" },
+            { selected: false, value: "CHF", text: "Swiss franc" },
+            { selected: false, value: "ISK", text: "Icelandic krona" },
+            { selected: false, value: "NOK", text: "Norwegian krone" },
+            { selected: false, value: "HRK", text: "Croatian kuna" },
+            { selected: false, value: "RUB", text: "Russian rouble" },
+            { selected: false, value: "TRY", text: "Turkish lira" },
+            { selected: false, value: "AUD", text: "Australian dollar" },
+            { selected: false, value: "BRL", text: "Brazilian real" },
+            { selected: false, value: "CAD", text: "Canadian dollar" },
+            { selected: false, value: "CNY", text: "Chinese yuan renminbi" },
+            { selected: false, value: "HKD", text: "Hong Kong dollar" },
+            { selected: false, value: "IDR", text: "Indonesian rupiah" },
+            { selected: false, value: "ILS", text: "Israeli shekel" },
+            { selected: false, value: "INR", text: "Indian rupee" },
+            { selected: false, value: "KRW", text: "South Korean won" },
+            { selected: false, value: "MXN", text: "Mexican peso" },
+            { selected: false, value: "MYR", text: "Malaysian ringgit" },
+            { selected: false, value: "NZD", text: "New Zealand dollar" },
+            { selected: false, value: "PHP", text: "Philippine peso" },
+            { selected: false, value: "SGD", text: "Singapore dollar" },
+            { selected: false, value: "THB", text: "Thai baht" },
+            { selected: false, value: "ZAR", text: "South African rand" }]
+
+            options.forEach(option =>
+                optionList.add(
+                    new Option(option.text, option.value, option.selected)
+                )
+            );
+        }
+
+        window.onload = function loadFunction() {
+            populate(document.getElementById("base"));
+            populate(document.getElementById("target"));
+            getH
+        }     
+    </script>
+    </form>
+</body>
 
 </html>
