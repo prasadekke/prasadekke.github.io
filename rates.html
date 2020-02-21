@@ -56,21 +56,34 @@
                     </div>
                 </div>
         </div>
-        <div class="container" id="historical_data">
+        <br />
+        <div class="container" id="graph_historical_data">
             <h2>Historical Data</h2>
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="range">Historical Data For:</label>
-                <div class="col-sm-10">
-                    <input class="form-control" type="text" name="range" id="range" inputmode="numeric"
-                        inputmode="numeric" pattern="[0-9]+" value="20" onchange="get_datewise_data()">
+            <div id="historical_data" class="container">
+                <div class="historical_data-group">
+                    <label class="control-label col-sm-2" for="range">Historical Data For:</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type="text" name="range" id="range" inputmode="numeric"
+                            inputmode="numeric" pattern="[0-9]+" value="20" onchange="get_datewise_data()">
+                    </div>
+                </div>
+                <div class="historical_data-group">
+                    <label for="disabledInput" class="col-sm-2 control-label">Remark</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" id="remark" type="text" disabled>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="disabledInput" class="col-sm-2 control-label">Remark</label>
-                <div class="col-sm-10">
-                    <input class="form-control" id="remark" type="text" disabled>
-                </div>
+        </div>
+        <div class="container" id="graph_historical_data_1">
+            <h2>Graph Data</h2>
+            <div id="historical_data_graph" class="container">
+                <canvas id="chart" width="100" height="100"></canvas>
             </div>
+        </div>
+        <br />
+        <div class="container" id="historical_data">
+            <h2>Table Data</h2>
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -81,10 +94,6 @@
                 <tbody id="historical_data_body">
                 </tbody>
             </table>
-        </div>
-        <div class="container" id="graph_historical_data">
-            <h2>Graph Data</h2>
-            <canvas id="chart" width="100" height="100"></canvas>
         </div>
     </div>
     <script type="text/javascript">
