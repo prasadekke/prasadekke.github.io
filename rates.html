@@ -37,7 +37,7 @@
                     <label class="control-label col-sm-2" for="amount">Amount</label>
                     <div class="col-sm-10">
                         <input class="form-control" type="text" name="amount" id="amount" inputmode="numeric"
-                            inputmode="numeric" pattern="[0-9]+" value="1">
+                            inputmode="numeric" pattern="[0-9]+" value="20000">
                     </div>
                 </div>
                 <div class="form-group">
@@ -189,7 +189,7 @@
         }
 
         function populate(optionList, selectedOption) {
-            var options = [{ selected: false, value: "USD", text: "US dollar" },
+            var options = [,
             { selected: false, value: "JPY", text: "Japanese yen" },
             { selected: false, value: "BGN", text: "Bulgarian lev" },
             { selected: false, value: "CZK", text: "Czech koruna" },
@@ -220,7 +220,8 @@
             { selected: false, value: "PHP", text: "Philippine peso" },
             { selected: false, value: "SGD", text: "Singapore dollar" },
             { selected: false, value: "THB", text: "Thai baht" },
-            { selected: false, value: "ZAR", text: "South African rand" }]
+            { selected: false, value: "ZAR", text: "South African rand" },
+            { selected: false, value: "USD", text: "US dollar" }]
 
             options.forEach(option =>
                 optionList.add(
