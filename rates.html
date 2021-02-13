@@ -225,7 +225,7 @@
 
             options.forEach(option =>
                 optionList.add(
-                    new Option(option.text, option.value, option.value == selectedOption)
+                    new Option(option.text, option.value, option.value == selectedOption, option.value == selectedOption)
                 )
             );
         }
