@@ -65,7 +65,7 @@
                     <label class="control-label col-sm-2" for="range">Historical Data For:</label>
                     <div class="col-sm-10">
                         <input class="form-control" type="text" name="range" id="range" inputmode="numeric"
-                            inputmode="numeric" pattern="[0-9]+" value="20" onchange="get_datewise_data()">
+                            inputmode="numeric" pattern="[0-9]+" value="365" onchange="get_datewise_data()">
                     </div>
                 </div>
                 <div class="historical_data-group">
@@ -188,8 +188,8 @@
             current_chart.update();
         }
 
-        function populate(optionList) {
-            var options = [{ selected: true, value: "USD", text: "US dollar" },
+        function populate(optionList, selectedOption) {
+            var options = [{ selected: false, value: "USD", text: "US dollar" },
             { selected: false, value: "JPY", text: "Japanese yen" },
             { selected: false, value: "BGN", text: "Bulgarian lev" },
             { selected: false, value: "CZK", text: "Czech koruna" },
@@ -224,7 +224,7 @@
 
             options.forEach(option =>
                 optionList.add(
-                    new Option(option.text, option.value, option.selected)
+                    new Option(option.text, option.value, option.value == selectedOption)
                 )
             );
         }
@@ -274,8 +274,8 @@
             return c_chart;
         }
         window.onload = function loadFunction() {
-            populate(document.getElementById("base"));
-            populate(document.getElementById("target"));
+            populate(document.getElementById("base"), "USD");
+            populate(document.getElementById("target"), "INR");
             chart = createChart(document.getElementById('chart').getContext('2d'));
             amount_chart = createChart(document.getElementById('chart_amount').getContext('2d'));
         }     
