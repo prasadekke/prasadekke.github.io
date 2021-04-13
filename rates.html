@@ -109,7 +109,7 @@
         var amount_chart;
 
         function convert() {
-            var url = "https://api.exchangeratesapi.io/latest?";
+            var url = "https://api.exchangeratesapi.io/v1/latest?access_key=2fd50c6e3c38fde15e7d45bedce79472";
             var base = document.getElementById("base").value;
             var target = document.getElementById("target").value;
             var amount = document.getElementById("amount").value;
@@ -127,7 +127,7 @@
         }
 
         function get_datewise_data() {
-            var url = "https://api.exchangeratesapi.io/history?";
+            var url = "https://api.exchangeratesapi.io/v1/history?access_key=2fd50c6e3c38fde15e7d45bedce79472";
             var base = document.getElementById("base").value;
             var target = document.getElementById("target").value;
             var range = parseInt(document.getElementById("range").value);
