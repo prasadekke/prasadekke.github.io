@@ -109,12 +109,13 @@
         var amount_chart;
 
         function convert() {
-            var url = "http://api.exchangeratesapi.io/v1/latest?access_key=2fd50c6e3c38fde15e7d45bedce79472";
+            //var url = "http://api.exchangeratesapi.io/v1/latest?access_key=2fd50c6e3c38fde15e7d45bedce79472";
+            var url = "https://api.exchangerate.host/latest?";            
             var base = document.getElementById("base").value;
             var target = document.getElementById("target").value;
             var amount = document.getElementById("amount").value;
             amount = parseFloat(amount);
-            var finalUrl = url + "&base=" + base + "&symbols=" + target;
+            var finalUrl = url + "base=" + base + "&symbols=" + target;
             const options = {};
             fetch(finalUrl, options)
                 .then(res => res.text().then(text => {
@@ -127,7 +128,8 @@
         }
 
         function get_datewise_data() {
-            var url = "http://api.exchangeratesapi.io/v1/history?access_key=2fd50c6e3c38fde15e7d45bedce79472";
+//             var url = "http://api.exchangeratesapi.io/v1/history?access_key=2fd50c6e3c38fde15e7d45bedce79472";
+            var url = "https://api.exchangerate.host/timeseries?";
             var base = document.getElementById("base").value;
             var target = document.getElementById("target").value;
             var range = parseInt(document.getElementById("range").value);
@@ -136,7 +138,8 @@
             var start_date = new Date();
             start_date.setDate(end_date.getDate() - range);
 
-            var finalUrl = url + "&start_at=" + start_date.toISOString().split('T')[0] + "&end_at=" + end_date.toISOString().split('T')[0] + "&base=" + base + "&symbols=" + target;
+//             var finalUrl = url + "&start_at=" + start_date.toISOString().split('T')[0] + "&end_at=" + end_date.toISOString().split('T')[0] + "&base=" + base + "&symbols=" + target;
+           var finalUrl = url + "start_date=" + start_date.toISOString().split('T')[0] + "&end_date=" + end_date.toISOString().split('T')[0] + "&base=" + base + "&symbols=" + target;
             const options = {};
             fetch(finalUrl, options)
                 .then(res => res.text().then(text => {
