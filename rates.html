@@ -114,7 +114,7 @@
             var target = document.getElementById("target").value;
             var amount = document.getElementById("amount").value;
             amount = parseFloat(amount);
-            var finalUrl = url + "base=" + base + "&symbols=" + target;
+            var finalUrl = url + "&base=" + base + "&symbols=" + target;
             const options = {};
             fetch(finalUrl, options)
                 .then(res => res.text().then(text => {
@@ -136,7 +136,7 @@
             var start_date = new Date();
             start_date.setDate(end_date.getDate() - range);
 
-            var finalUrl = url + "start_at=" + start_date.toISOString().split('T')[0] + "&end_at=" + end_date.toISOString().split('T')[0] + "&base=" + base + "&symbols=" + target;
+            var finalUrl = url + "&start_at=" + start_date.toISOString().split('T')[0] + "&end_at=" + end_date.toISOString().split('T')[0] + "&base=" + base + "&symbols=" + target;
             const options = {};
             fetch(finalUrl, options)
                 .then(res => res.text().then(text => {
