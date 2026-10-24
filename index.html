@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prasad's Homepage</title>
-  <meta name="description" content="Small web tools by Prasad: a currency converter with European Central Bank exchange rate history, the latency numbers every programmer should know, and a stocks watchlist.">
+  <meta name="description" content="Small web tools by Prasad: a currency converter with European Central Bank exchange rate history, the latency numbers every programmer should know, a stocks watchlist and a developer toolbox.">
   <link rel="canonical" href="https://prasadekke.github.io/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Prasad's Homepage">
   <meta property="og:title" content="Prasad's Homepage">
-  <meta property="og:description" content="Small web tools by Prasad: a currency converter with European Central Bank exchange rate history, the latency numbers every programmer should know, and a stocks watchlist.">
+  <meta property="og:description" content="Small web tools by Prasad: a currency converter with European Central Bank exchange rate history, the latency numbers every programmer should know, a stocks watchlist and a developer toolbox.">
   <meta property="og:url" content="https://prasadekke.github.io/">
   <meta property="og:image" content="https://prasadekke.github.io/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -85,7 +85,7 @@
     }
 
     .wrap {
-      max-width: 1040px;
+      max-width: 920px;
       margin: 0 auto;
       padding: 56px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
     }
@@ -97,7 +97,7 @@
 
     .tools {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
     }
 
@@ -144,13 +144,14 @@
     .movers { display: flex; flex-wrap: wrap; gap: 4px; }
     .movers span { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--paper); white-space: nowrap; }
     .movers b { font-weight: 500; margin-right: 5px; }
+    .chips span { color: var(--muted); }
     .movers .up { color: var(--up); }
     .movers .down { color: var(--down); }
 
     footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
     footer a { color: inherit; text-underline-offset: 3px; }
 
-    @media (max-width: 860px) {
+    @media (max-width: 700px) {
       .wrap { padding-top: 36px; }
       .tools { grid-template-columns: minmax(0, 1fr); }
     }
@@ -196,6 +197,15 @@
         <h2>Stocks Watchlist</h2>
         <p>Broadcom, Meta and the memory makers: Micron, SanDisk, Western Digital, Samsung and SK hynix, with charts and key stats.</p>
         <span class="go">Open watchlist →</span>
+      </a>
+      <a class="tool" href="tools/">
+        <div class="preview" aria-hidden="true">
+          <div class="meta"><span>13 tools</span><span>works offline</span></div>
+          <div class="movers chips"><span>JSON</span><span>JWT</span><span>Base64</span><span>Unix time</span><span>UUID</span><span>SHA-256</span><span>Regex</span><span>Diff</span><span>Cron</span><span>CIDR</span><span>Timezones</span><span>HTTP</span><span>chmod</span></div>
+        </div>
+        <h2>Dev Toolbox</h2>
+        <p>JSON formatter, JWT decoder, Base64, timestamps, UUIDs, hashes, regex, diff, cron, subnets, timezones and more. Runs in your browser; nothing is uploaded.</p>
+        <span class="go">Open toolbox →</span>
       </a>
     </main>
 

@@ -1,0 +1,9 @@
+{
+  "name": "Dev Toolbox",
+  "short_name": "Toolbox",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#111513",
+  "theme_color": "#111513",
+  "icons": [{ "src": "icon.png", "sizes": "512x512", "type": "image/png" }]
+}
