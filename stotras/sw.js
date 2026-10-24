@@ -9,7 +9,8 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
+    // Only this app's old versions: other apps on this origin keep their caches
+    Promise.all(keys.filter(k => k.startsWith('stotras-') && k !== CACHE).map(k => caches.delete(k)))));
   self.clients.claim();
 });
 
