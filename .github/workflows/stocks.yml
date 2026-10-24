@@ -1,0 +1,44 @@
+name: Update stock data
+
+on:
+  schedule:
+    # Every 15 minutes, weekdays, while Korean (00:00–06:30 UTC) and US (13:30–21:00 UTC) markets trade
+    - cron: "*/15 0-7,13-21 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stock-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install yfinance
+        run: pip install --upgrade yfinance
+
+      - name: Fetch quotes and history
+        run: |
+          mkdir -p out
+          curl -sf "https://raw.githubusercontent.com/${{ github.repository }}/data/stocks.json" -o previous.json || echo '{}' > previous.json
+          python .github/scripts/fetch_stocks.py out/stocks.json previous.json
+
+      # The data lives on its own branch as a single commit, so the site's history and builds stay untouched
+      - name: Publish to the data branch
+        working-directory: out
+        run: |
+          git init -q -b data
+          git add stocks.json
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Stock data $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
