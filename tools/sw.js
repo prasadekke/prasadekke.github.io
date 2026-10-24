@@ -1,24 +1,14 @@
-// Bump the version when index.html changes so phones pick up the new copy
-const CACHE = 'toolbox-v1';
-const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon.png'];
-
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
-  self.skipWaiting();
-});
+// The toolbox moved to https://prasadekke.com/tools/. This worker replaces the old cache-first
+// one on installed copies: it drops the toolbox caches, unregisters itself, and reloads open
+// pages so they pick up the redirect. Other apps on this origin (stotras, japa) keep their caches.
+self.addEventListener('install', () => self.skipWaiting());
 
 self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys =>
-    Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
-  self.clients.claim();
-});
-
-// Serve from the phone first; fall back to the network and keep a copy (fonts included)
-self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
-  e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(res => {
-    const copy = res.clone();
-    caches.open(CACHE).then(c => c.put(e.request, copy));
-    return res;
-  })));
+  e.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k.startsWith('toolbox-')).map(k => caches.delete(k)));
+    await self.registration.unregister();
+    const pages = await self.clients.matchAll({ type: 'window' });
+    pages.forEach(page => page.navigate(page.url));
+  })());
 });
