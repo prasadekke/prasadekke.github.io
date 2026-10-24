@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Prasad's Homepage</title>
-  <meta name="description" content="Small web tools by Prasad: a currency converter with European Central Bank exchange rate history, and the latency numbers every programmer should know.">
+  <meta name="description" content="Small web tools by Prasad: a currency converter with European Central Bank exchange rate history, the latency numbers every programmer should know, and a stocks watchlist.">
   <link rel="canonical" href="https://prasadekke.github.io/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="favicon.ico" sizes="48x48">
@@ -14,7 +14,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Prasad's Homepage">
   <meta property="og:title" content="Prasad's Homepage">
-  <meta property="og:description" content="Small web tools by Prasad: a currency converter with European Central Bank exchange rate history, and the latency numbers every programmer should know.">
+  <meta property="og:description" content="Small web tools by Prasad: a currency converter with European Central Bank exchange rate history, the latency numbers every programmer should know, and a stocks watchlist.">
   <meta property="og:url" content="https://prasadekke.github.io/">
   <meta property="og:image" content="https://prasadekke.github.io/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -37,6 +37,8 @@
       --accent-soft: rgba(31, 138, 122, 0.12);
       --us: #c07a12;
       --ms: #c2462b;
+      --up: #1f7a4d;
+      --down: #b23a26;
       --sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
     }
@@ -51,6 +53,8 @@
         --accent-soft: rgba(76, 194, 174, 0.14);
         --us: #e8a547;
         --ms: #ef7558;
+        --up: #5cc28c;
+        --down: #ef7558;
         color-scheme: dark;
       }
     }
@@ -64,6 +68,8 @@
       --accent-soft: rgba(76, 194, 174, 0.14);
       --us: #e8a547;
       --ms: #ef7558;
+      --up: #5cc28c;
+      --down: #ef7558;
       color-scheme: dark;
     }
 
@@ -79,7 +85,7 @@
     }
 
     .wrap {
-      max-width: 820px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 56px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
     }
@@ -91,7 +97,7 @@
 
     .tools {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
     }
 
@@ -115,7 +121,7 @@
     .tool .go { margin-top: auto; font-size: 13px; font-weight: 500; color: var(--accent); }
 
     .preview {
-      height: 96px;
+      height: 112px;
       border-radius: 10px;
       background: var(--bg);
       border: 1px solid var(--rule);
@@ -135,10 +141,16 @@
     .bars { display: flex; align-items: flex-end; gap: 3px; height: 52px; }
     .bars span { flex: 1; border-radius: 2px 2px 0 0; background: var(--c); min-height: 2px; }
 
+    .movers { display: flex; flex-wrap: wrap; gap: 4px; }
+    .movers span { font-family: var(--mono); font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--paper); white-space: nowrap; }
+    .movers b { font-weight: 500; margin-right: 5px; }
+    .movers .up { color: var(--up); }
+    .movers .down { color: var(--down); }
+
     footer { margin-top: 40px; font-size: 13px; color: var(--muted); }
     footer a { color: inherit; text-underline-offset: 3px; }
 
-    @media (max-width: 600px) {
+    @media (max-width: 860px) {
       .wrap { padding-top: 36px; }
       .tools { grid-template-columns: minmax(0, 1fr); }
     }
@@ -153,7 +165,7 @@
     <header>
       <p class="handle">prasadekke.github.io</p>
       <h1>Prasad's Homepage</h1>
-      <p class="lede">A couple of small tools I keep around.</p>
+      <p class="lede">A few small tools I keep around.</p>
     </header>
 
     <main class="tools">
@@ -175,6 +187,15 @@
         <h2>Latency Numbers</h2>
         <p>Jeff Dean's latency figures every programmer should know, from an L1 cache hit to a packet across the Atlantic, on one log scale.</p>
         <span class="go">Open latency numbers →</span>
+      </a>
+      <a class="tool" href="stocks.html">
+        <div class="preview" aria-hidden="true">
+          <div class="meta"><span>Today</span><span id="stocksAsOf"></span></div>
+          <div class="movers" id="movers"></div>
+        </div>
+        <h2>Stocks Watchlist</h2>
+        <p>Broadcom, Meta and the memory makers: Micron, SanDisk, Western Digital, Samsung and SK hynix, with charts and key stats.</p>
+        <span class="go">Open watchlist →</span>
       </a>
     </main>
 
@@ -212,6 +233,22 @@
         document.getElementById('usdinr').textContent = vals[vals.length - 1].toFixed(2);
       } catch (e) {
         document.getElementById('usdinr').textContent = 'offline';
+      }
+    })();
+    // Watchlist preview: today's move for each stock, from the same data file as stocks.html
+    (async () => {
+      const short = { '005930.KS': 'SAMSUNG', '000660.KS': 'HYNIX' };
+      try {
+        const res = await fetch('https://raw.githubusercontent.com/prasadekke/prasadekke.github.io/data/stocks.json');
+        const data = await res.json();
+        const stocks = data.groups.flatMap(g => g.stocks);
+        document.getElementById('movers').innerHTML = stocks.map(s => {
+          const dir = s.changePct > 0 ? 'up' : s.changePct < 0 ? 'down' : '';
+          return `<span class="${dir}"><b>${short[s.symbol] || s.symbol}</b>${s.changePct > 0 ? '+' : s.changePct < 0 ? '−' : ''}${Math.abs(s.changePct).toFixed(1)}%</span>`;
+        }).join('');
+        document.getElementById('stocksAsOf').textContent = new Date(data.generated).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      } catch (e) {
+        document.getElementById('stocksAsOf').textContent = 'offline';
       }
     })();
   </script>
