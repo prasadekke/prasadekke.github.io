@@ -1,5 +1,5 @@
 // Bump the version when index.html changes so phones pick up the new copy
-const CACHE = 'stotras-v8';
+const CACHE = 'stotras-v9';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon.png'];
 
 self.addEventListener('install', e => {
