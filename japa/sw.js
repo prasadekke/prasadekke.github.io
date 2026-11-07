@@ -1,5 +1,5 @@
 // Bump the version when index.html changes so phones pick up the new copy
-const CACHE = 'japa-v3';
+const CACHE = 'japa-v4';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon.png'];
 
 self.addEventListener('install', e => {
@@ -9,7 +9,7 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys =>
-    // Only this app's old versions: other apps on this origin keep their caches
+    // Only this app's old versions: the stotras app shares this origin
     Promise.all(keys.filter(k => k.startsWith('japa-') && k !== CACHE).map(k => caches.delete(k)))));
   self.clients.claim();
 });
