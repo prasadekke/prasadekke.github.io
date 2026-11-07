@@ -1,9 +1,10 @@
 // Bump the version when index.html changes so phones pick up the new copy
-const CACHE = 'japa-v4';
+const CACHE = 'japa-v5';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon.png'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)));
+  // 'reload' skips the browser's HTTP cache, which can hold the old page for 10 minutes
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES.map(f => new Request(f, { cache: 'reload' })))));
   self.skipWaiting();
 });
 
